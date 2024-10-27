@@ -15,10 +15,10 @@ class Reviews
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    private ?movies $movie_id = null;
+    private ?Movies $movie = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    private ?customers $customer_id = null;
+    private ?Customers $customer = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $reviewtext = null;
@@ -26,31 +26,37 @@ class Reviews
     #[ORM\Column]
     private ?int $rating = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updated = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getMovieId(): ?movies
+    public function getMovie(): ?Movies
     {
-        return $this->movie_id;
+        return $this->movie;
     }
 
-    public function setMovieId(?movies $movie_id): static
+    public function setMovie(?Movies $movie): static
     {
-        $this->movie_id = $movie_id;
+        $this->movie = $movie;
 
         return $this;
     }
 
-    public function getCustomerId(): ?customers
+    public function getCustomer(): ?Customers
     {
-        return $this->customer_id;
+        return $this->customer;
     }
 
-    public function setCustomerId(?customers $customer_id): static
+    public function setCustomer(?Customers $customer): static
     {
-        $this->customer_id = $customer_id;
+        $this->customer = $customer;
 
         return $this;
     }
@@ -75,6 +81,30 @@ class Reviews
     public function setRating(int $rating): static
     {
         $this->rating = $rating;
+
+        return $this;
+    }
+
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeInterface $created): static
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): ?\DateTimeInterface
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTimeInterface $updated): static
+    {
+        $this->updated = $updated;
 
         return $this;
     }

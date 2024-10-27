@@ -17,24 +17,30 @@ class Customers
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $username = null;
+    private ?string $name = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $img = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $phonenumber = null;
+    private ?string $phone = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $status = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updated = null;
+
     /**
      * @var Collection<int, Reviews>
      */
-    #[ORM\OneToMany(targetEntity: Reviews::class, mappedBy: 'customer_id')]
+    #[ORM\OneToMany(targetEntity: Reviews::class, mappedBy: 'customer')]
     private Collection $reviews;
 
     public function __construct()
@@ -47,26 +53,14 @@ class Customers
         return $this->id;
     }
 
-    public function getUsername(): ?string
+    public function getName(): ?string
     {
-        return $this->username;
+        return $this->name;
     }
 
-    public function setUsername(string $username): static
+    public function setName(string $name): static
     {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    public function getImg(): ?string
-    {
-        return $this->img;
-    }
-
-    public function setImg(string $img): static
-    {
-        $this->img = $img;
+        $this->name = $name;
 
         return $this;
     }
@@ -83,14 +77,26 @@ class Customers
         return $this;
     }
 
-    public function getPhonenumber(): ?string
+    public function getImg(): ?string
     {
-        return $this->phonenumber;
+        return $this->img;
     }
 
-    public function setPhonenumber(string $phonenumber): static
+    public function setImg(string $img): static
     {
-        $this->phonenumber = $phonenumber;
+        $this->img = $img;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }
@@ -107,6 +113,30 @@ class Customers
         return $this;
     }
 
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeInterface $created): static
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): ?\DateTimeInterface
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTimeInterface $updated): static
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Reviews>
      */
@@ -119,7 +149,7 @@ class Customers
     {
         if (!$this->reviews->contains($review)) {
             $this->reviews->add($review);
-            $review->setCustomerId($this);
+            $review->setCustomer($this);
         }
 
         return $this;
@@ -129,8 +159,8 @@ class Customers
     {
         if ($this->reviews->removeElement($review)) {
             // set the owning side to null (unless already changed)
-            if ($review->getCustomerId() === $this) {
-                $review->setCustomerId(null);
+            if ($review->getCustomer() === $this) {
+                $review->setCustomer(null);
             }
         }
 

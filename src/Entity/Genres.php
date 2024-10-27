@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\GenresRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GenresRepository::class)]
@@ -18,10 +19,16 @@ class Genres
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updated = null;
+
     /**
      * @var Collection<int, Movies>
      */
-    #[ORM\OneToMany(targetEntity: Movies::class, mappedBy: 'genre_id')]
+    #[ORM\OneToMany(targetEntity: Movies::class, mappedBy: 'genre')]
     private Collection $movies;
 
     public function __construct()
@@ -46,6 +53,30 @@ class Genres
         return $this;
     }
 
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeInterface $created): static
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): ?\DateTimeInterface
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTimeInterface $updated): static
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Movies>
      */
@@ -58,7 +89,7 @@ class Genres
     {
         if (!$this->movies->contains($movie)) {
             $this->movies->add($movie);
-            $movie->setGenreId($this);
+            $movie->setGenre($this);
         }
 
         return $this;
@@ -68,8 +99,8 @@ class Genres
     {
         if ($this->movies->removeElement($movie)) {
             // set the owning side to null (unless already changed)
-            if ($movie->getGenreId() === $this) {
-                $movie->setGenreId(null);
+            if ($movie->getGenre() === $this) {
+                $movie->setGenre(null);
             }
         }
 

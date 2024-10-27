@@ -17,24 +17,27 @@ class Movies
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
-    private ?genres $genre_id = null;
+    private ?Genres $genre = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $decription = null;
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $img = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createat = null;
+    private ?\DateTimeInterface $created = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updated = null;
 
     /**
      * @var Collection<int, Reviews>
      */
-    #[ORM\OneToMany(targetEntity: Reviews::class, mappedBy: 'movie_id')]
+    #[ORM\OneToMany(targetEntity: Reviews::class, mappedBy: 'movie')]
     private Collection $reviews;
 
     public function __construct()
@@ -47,14 +50,14 @@ class Movies
         return $this->id;
     }
 
-    public function getGenreId(): ?genres
+    public function getGenre(): ?Genres
     {
-        return $this->genre_id;
+        return $this->genre;
     }
 
-    public function setGenreId(?genres $genre_id): static
+    public function setGenre(?Genres $genre): static
     {
-        $this->genre_id = $genre_id;
+        $this->genre = $genre;
 
         return $this;
     }
@@ -71,14 +74,14 @@ class Movies
         return $this;
     }
 
-    public function getDecription(): ?string
+    public function getDescription(): ?string
     {
-        return $this->decription;
+        return $this->description;
     }
 
-    public function setDecription(string $decription): static
+    public function setDescription(string $description): static
     {
-        $this->decription = $decription;
+        $this->description = $description;
 
         return $this;
     }
@@ -95,14 +98,26 @@ class Movies
         return $this;
     }
 
-    public function getCreateat(): ?\DateTimeInterface
+    public function getCreated(): ?\DateTimeInterface
     {
-        return $this->createat;
+        return $this->created;
     }
 
-    public function setCreateat(\DateTimeInterface $createat): static
+    public function setCreated(\DateTimeInterface $created): static
     {
-        $this->createat = $createat;
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): ?\DateTimeInterface
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTimeInterface $updated): static
+    {
+        $this->updated = $updated;
 
         return $this;
     }
@@ -119,7 +134,7 @@ class Movies
     {
         if (!$this->reviews->contains($review)) {
             $this->reviews->add($review);
-            $review->setMovieId($this);
+            $review->setMovie($this);
         }
 
         return $this;
@@ -129,8 +144,8 @@ class Movies
     {
         if ($this->reviews->removeElement($review)) {
             // set the owning side to null (unless already changed)
-            if ($review->getMovieId() === $this) {
-                $review->setMovieId(null);
+            if ($review->getMovie() === $this) {
+                $review->setMovie(null);
             }
         }
 
