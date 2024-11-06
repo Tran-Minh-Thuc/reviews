@@ -12,10 +12,13 @@ class CustomerFixtures extends Fixture
     {
         // $product = new Product();
         // $manager->persist($product);
+        $imagePath = 'public/images/default_avt.jpg';
+        $imageData = base64_encode(file_get_contents($imagePath));
+
         $john = new Customers();
         $john->setName('John Doe');
         $john->setEmail('john.doe@example.com');
-        $john->setImg('path/to/john.jpg');
+        $john->setImg($imageData);
         $john->setPhone('123-456-7890');
         $john->setStatus(1);
         $john->setCreated(new \DateTime());
@@ -25,7 +28,7 @@ class CustomerFixtures extends Fixture
         $jane = new Customers();
         $jane->setName('Jane Smith');
         $jane->setEmail('jane.smith@example.com');
-        $jane->setImg('path/to/jane.jpg');
+        $jane->setImg($imageData);
         $jane->setPhone('123-456-7891');
         $jane->setStatus(1);
         $jane->setCreated(new \DateTime());
@@ -35,7 +38,7 @@ class CustomerFixtures extends Fixture
         $alice = new Customers();
         $alice->setName('Alice Brown');
         $alice->setEmail('alice.brown@example.com');
-        $alice->setImg('path/to/alice.jpg');
+        $alice->setImg($imageData);
         $alice->setPhone('123-456-7892');
         $alice->setStatus(1);
         $alice->setCreated(new \DateTime());
