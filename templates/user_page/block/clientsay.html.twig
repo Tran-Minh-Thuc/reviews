@@ -1,0 +1,37 @@
+<div class="container">
+	<div class="section-header">
+		<h2>Khán giả đã nói gì ?</h2>
+	</div>
+	<div class="row">
+		<div class="owl-carousel testimonial-carousel">
+			{% for good_review in good_reviews %}
+				<div class="col-sm-3 col-xs-12">
+					<div style="height: 320px" class="single-testimonial-box">
+						<div class="testimonial-description">
+							<div class="testimonial-info">
+								<div class="testimonial-img">
+									<img style="object-fit: cover;" src="{{ good_review.customer.img }}" alt="image of clients person"/>
+								</div>
+							</div>
+							<div style="margin-top: 0px;" class="testimonial-comment">
+								<p>{{ good_review.customer.name }}
+									đã nhận xét phim
+									{{ good_review.movie.title }}:{% set words = good_review.reviewtext|split(' ') %}
+									{% set limited_reviewtext = words|slice(0, 20)|join(' ') %}
+									{% if words|length > 20 %}
+										{{ limited_reviewtext }}...
+									{% else %}
+										{{ good_review.reviewtext }}
+									{% endif %}
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		<!--/.testimonial-carousel-->
+	</div>
+	<!--/.row-->
+</div>
+<!--/.container-->

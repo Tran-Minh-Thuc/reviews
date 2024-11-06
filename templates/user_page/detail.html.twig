@@ -1,0 +1,161 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    {% include 'user_page/block/head.html.twig' %}
+    <body>
+        <section id="home" class="welcome-hero">
+            <div class="top-area">
+                <div class="header-area">
+                    <nav class="navbar navbar-default bootsnav navbar-sticky navbar-scrollspy" data-minus-value-desktop="70" data-minus-value-mobile="55" data-speed="1000">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                                    <i class="fa fa-bars"></i>
+                                </button>
+                                <a class="navbar-brand" href="{{path('app_user_page')}}">carvilla<span></span>
+                                </a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div style="vertical-align: middle;width: 100%; height: 100%; padding: 120px 200px 120px 200px;" class="container welcome-hero-txt">
+
+                <div style=" position: relative; min-width: 100%; background: white; padding:0px 0px 0px 0px">
+                    <div style="background: white; float:left; width:64%; margin: 0px 0px 0px 0px; padding: 30px 0px 30px 30px;" class="row">
+                        <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
+                            <div style="height: auto; width: 100%; border-radius: 5px; overflow: hidden;">
+                                <img src="{{movie.img}}" alt="Movie Image" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div style="float:left" class="col-md-12">
+                                <p style="color:black; font-size:40px">{{movie.title}}</p>
+                            </div>
+                            <div class="col-md-14">
+                                <p style="color:black; font-size:14px">{{movie.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="overflow-y: auto;  background: #eef2f500; float: right; width:30%; margin: 0px 0px 0px 0px; padding: 0px 20px 20px 12px;" class="row">
+                        <button onclick="openSearch()" style="background: white;font-size:13px; border-radius: 5px white; height: 35px; margin: 0px 18px 20px 0px; width: 96%;" type="button">+ Thêm đánh giá của bạn !
+                        </button>
+                        <div style="overflow-y: auto; max-height:400px;">
+						{% for review in movie.reviews %}
+                            <div style="margin-bottom: 20px; width: 350px; background-color: white; border-radius: 4px; box-shadow: 10px 10px 5px #aaaaaa;">
+                                <span style="text-align: justify;font-size: 13px;font-weight: 500; color: #56575b;">{{review.reviewtext}}</span>
+                                <div class="" style=" height: 25px; ">
+                                    <div style="margin: 0px 0px 0px 10px; float: left;"><img style="margin: 0px 0px 3px 0px;" src="{{review.customer.img}}" width="18"><span style="font-size: 13px; font-weight: 500; margin-left: 6px; color: #56575b;">{{review.customer.name}}</span>
+                                    </div>
+                                    <div style="margin-right: 5px; float: right;">
+                                        {% set full_stars = review.rating %}
+                                        {% set empty_stars = 5 - full_stars %}
+										{% if full_stars != 0 %}
+										{% for i in range(1, full_stars) %}
+											<i class="fas fa-star"></i>
+										{% endfor %}
+										{% endif %}
+										{% if empty_stars !=0 %}
+										{% for i in range(1, empty_stars) %}
+											<i class="far fa-star"></i>
+										{% endfor %}
+										{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+						{% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer id="contact" class="contact">
+            {% include 'user_page/block/contact.html.twig' %}
+        </footer>
+        {% include 'user_page/block/endscript.html.twig' %}
+    </body>
+
+    <div id="myOverlay" class="overlay">
+        <span class="closebtn" onclick="closeSearch()" title="Close Overlay">x</span>
+        <div style="left: -533px; position: relative; top: 15%; text-align: center; overflow-y: auto; max-height: 600px; background: #eef2f5; float: right; width: 35%; margin: 0; padding: 20px;" class="row">
+
+
+            {{ form_start(form_review, {'attr': {'style': 'padding: 20px 80px 100px; border-radius: 8px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);'}}) }}
+                 {{ form_row(form_review.img, {'id': 'img'}) }}
+                {{ form_row(form_review.name) }}
+                {{ form_row(form_review.email) }}
+                {{ form_row(form_review.phone) }}
+                {{ form_row(form_review.reviewtext) }}
+                <div id="starRating" style="margin-bottom: 20px;">
+                    {% for i in 1..5 %}
+                    <span class="star" data-rating="{{ i }}" style="color: gray; font-size: 24px; cursor: pointer;">★</span>
+                {% endfor %}
+                {{ form_widget(form_review.rating) }}
+                </div>
+
+                {{ form_row(form_review.save) }}
+                {{ form_end(form_review) }}
+
+        </div>
+
+    </div>
+</html>
+
+{% block javascripts %}
+
+<script>
+    document.querySelectorAll('.star').forEach(function(star) {
+        star.addEventListener('click', function() {
+            // Set the value of the hidden input field to the rating selected by the user
+            document.querySelector('#{{ form_review.rating.vars.id }}').value = this.getAttribute('data-rating');
+
+            // Update the styling of stars based on the selected rating
+            var rating = parseInt(this.getAttribute('data-rating'));
+            document.querySelectorAll('.star').forEach(function(star) {
+                var starRating = parseInt(star.getAttribute('data-rating'));
+                if (starRating <= rating) {
+                    star.style.color = 'gold';
+                } else {
+                    star.style.color = 'gray';
+                }
+            });
+        });
+    });
+    function openSearch() {
+        document.getElementById("myOverlay").style.display = "block";
+    }
+    function closeSearch() {
+        document.getElementById("myOverlay").style.display = "none";
+    }
+    window.onload = function() {
+        var imagePreview = document.getElementById('previewImg');
+        var imgInput = document.getElementById('img');
+
+        // Check if imgInput has value
+        if (imgInput.value) {
+            imagePreview.src = imgInput.value;
+        }
+    };
+    function previewImage(input) {
+        var imagePreview = document.getElementById('previewImg');
+        var imgInput = document.getElementById('img');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imgInput.value = e.target.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }else{
+            imagePreview.src = "{{ asset('frontend/img/account/blank.jpg') }}";
+        }
+    }
+    // Trigger the file input when the button is clicked
+    document.getElementById('uploadBtn').addEventListener('click', function() {
+        document.getElementById('uploadBtn').click();
+    });
+</script>
+{% endblock %}

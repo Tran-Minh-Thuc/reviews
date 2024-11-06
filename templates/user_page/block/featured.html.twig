@@ -1,0 +1,56 @@
+<div class="container">
+	<div class="section-header">
+		<p>Hành trình qua những bộ phim kỳ diệu</p>
+		<h2>Tất cả phim</h2>
+	</div>
+	<!--/.section-header-->
+	<div class="featured-cars-content">
+		<div id="full-movie" class="row">
+			{% for movie in movies %}
+
+				<div class="col-lg-3 col-md-4 col-sm-6">
+					<div class="single-featured-cars">
+						<div class="featured-img-box">
+							<div class="featured-cars-img">
+								<img style="object-fit: cover;" src="{{ movie.img }}" alt="cars">
+							</div>
+						</div>
+						<div class="featured-cars-txt">
+							<h2>
+								<a href="/detail-product/{{movie.id}}">{{ movie.title }}</a>
+							</h2>
+                            {% set stars = ratings[movie.id]|default(0) %}
+                            {% set full_stars = stars|round(0, 'floor') %}
+                            {% set half_star = stars - full_stars >= 0.5 ? 1 : 0 %}
+                            {% set empty_stars = 5 - full_stars - half_star %}
+                            <h3>
+								{% if full_stars != 0 %}
+                                {% for i in range(1, full_stars) %}
+                                    <i class="fas fa-star"></i>
+                                {% endfor %}
+								{% endif %}
+                                {% if half_star %}
+                                    <i class="fas fa-star-half-alt"></i>
+                                {% endif %}
+								{% if empty_stars != 0 %}
+                                {% for i in range(1, empty_stars) %}
+                                    <i class="far fa-star"></i>
+                                {% endfor %}
+                                {% endif %}
+                            </h3>
+							{% set words = movie.description|split(' ') %}
+							{% set limited_description = words|slice(0, 20)|join(' ') %}
+							{% if words|length > 10 %}
+								<p>{{ limited_description }}...</p>
+							{% else %}
+								<p>{{ movie.description }}</p>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+
+		</div>
+	</div>
+</div>
+<!--/.container-->
