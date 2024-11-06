@@ -112,7 +112,7 @@ class CustomerController extends AbstractController
     return new Response('Invalid customer data', Response::HTTP_BAD_REQUEST);
   }
 
-    /**
+  /**
    * Search for customers.
    */
   #[Route('/admin/search-customer', name: 'search-customer')]
@@ -133,9 +133,9 @@ class CustomerController extends AbstractController
         $queryBuilder
           ->andWhere("c.email LIKE :searchQuery")
           ->setParameter('searchQuery', '%' . $searchQuery . '%');
-      } elseif ($searchField === 'phonenumber') {
+      } elseif ($searchField === 'phone') {
         $queryBuilder
-          ->andWhere("c.phonenumber LIKE :searchQuery")
+          ->andWhere("c.phone LIKE :searchQuery")
           ->setParameter('searchQuery', '%' . $searchQuery . '%');
       }
     $Customers = $queryBuilder->getQuery()->getResult();
@@ -146,7 +146,7 @@ class CustomerController extends AbstractController
         'img'=>$c->getImg(),
         'username' => $c->getUsername(),
         'email' => $c->getEmail(),
-        'phonenumber'=>$c->getPhonenumber(),
+        'phone'=>$c->getPhone(),
         'status'=>$c->isStatus()
       ];
     }
