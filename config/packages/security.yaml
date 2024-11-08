@@ -37,7 +37,15 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_USER }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin/create-movie, roles: ROLE_USER }
+        - { path: ^/admin/movie, roles: ROLE_USER }
+        - { path: ^/admin/create-genre, roles: ROLE_USER }
+        - { path: ^/admin/genre, roles: ROLE_USER }
+        - { path: ^/admin/create-customer, roles: ROLE_USER }
+        - { path: ^/admin/customer, roles: ROLE_USER }
+        - { path: ^/admin/create-review, roles: ROLE_USER }
+        - { path: ^/admin/review, roles: ROLE_USER }
+
 
 when@test:
     security:
