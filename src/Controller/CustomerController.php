@@ -14,14 +14,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CustomerController extends AbstractController
 {
-    private EntityManagerInterface $em;
+  private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->em = $em;
-    }
+  public function __construct(EntityManagerInterface $em)
+  {
+    $this->em = $em;
+  }
 
-      /**
+  /**
    * Show customers.
    */
   #[Route('/admin/customers', name: 'customers')]
@@ -38,32 +38,32 @@ class CustomerController extends AbstractController
     ]);
   }
 
-    /**
-     * Create customer.
-     */
-    #[Route('/admin/create-customer', name: 'create-customer')]
-    public function createCustomer(Request $request): Response
-    {
-        $customer = new Customers();
-        $form = $this->createForm(CustomerType::class, $customer);
-        $form->handleRequest($request);
+  /**
+   * Create customer.
+   */
+  #[Route('/admin/create-customer', name: 'create-customer')]
+  public function createCustomer(Request $request): Response
+  {
+    $customer = new Customers();
+    $form = $this->createForm(CustomerType::class, $customer);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-          $customer->setCreated(new DateTime());
-          $customer->setUpdated(new DateTime());
-          $this->em->persist($customer);
-          $this->em->flush();
+    if ($form->isSubmitted() && $form->isValid()) {
+      $customer->setCreated(new DateTime());
+      $customer->setUpdated(new DateTime());
+      $this->em->persist($customer);
+      $this->em->flush();
 
-          $this->addFlash('insert_cus', 'true');
-          return $this->redirectToRoute('customers');
-        }
-
-        return $this->render('customer/customer.html.twig', [
-            'form' => $form->createView(),
-        ]);
+      $this->addFlash('insert_cus', 'true');
+      return $this->redirectToRoute('customers');
     }
 
-      /**
+    return $this->render('customer/customer.html.twig', [
+      'form' => $form->createView(),
+    ]);
+  }
+
+  /**
    * Edit customer.
    */
   #[Route('/admin/edit-customer/{id}', name: 'edit-customer')]
@@ -85,11 +85,11 @@ class CustomerController extends AbstractController
     ]);
   }
 
-    /**
+  /**
    * Delete a customer.
    */
   #[Route('/admin/delete-customer/{id}', name: 'delete-customer')]
-  public function deleteCustomer( $id)
+  public function deleteCustomer($id)
   {
     $customer = $this->em->getRepository(Customers::class)->find($id);
     $queryBuilder = $this->em->createQueryBuilder();
@@ -112,9 +112,6 @@ class CustomerController extends AbstractController
     return new Response('Invalid customer data', Response::HTTP_BAD_REQUEST);
   }
 
-  /**
-   * Search for customers.
-   */
   #[Route('/admin/search-customer', name: 'search-customer')]
   public function searchCustomer(Request $request): Response
   {
@@ -125,31 +122,31 @@ class CustomerController extends AbstractController
       ->select('c')
       ->from('App\Entity\Customers', 'c');
 
-      if ($searchField === 'username') {
-        $queryBuilder
-        ->andWhere("c.username LIKE :searchQuery")
-          ->setParameter('searchQuery', '%' . $searchQuery . '%');
-      } elseif ($searchField === 'email') {
-        $queryBuilder
-          ->andWhere("c.email LIKE :searchQuery")
-          ->setParameter('searchQuery', '%' . $searchQuery . '%');
-      } elseif ($searchField === 'phone') {
-        $queryBuilder
-          ->andWhere("c.phone LIKE :searchQuery")
-          ->setParameter('searchQuery', '%' . $searchQuery . '%');
-      }
+    if ($searchField === 'name') {
+      $queryBuilder
+        ->andWhere("c.name LIKE :searchQuery")
+        ->setParameter('searchQuery', '%' . $searchQuery . '%');
+    } elseif ($searchField === 'email') {
+      $queryBuilder
+        ->andWhere("c.email LIKE :searchQuery")
+        ->setParameter('searchQuery', '%' . $searchQuery . '%');
+    } elseif ($searchField === 'phone') {
+      $queryBuilder
+        ->andWhere("c.phone LIKE :searchQuery")
+        ->setParameter('searchQuery', '%' . $searchQuery . '%');
+    }
     $Customers = $queryBuilder->getQuery()->getResult();
     $formattedCustomer = [];
     foreach ($Customers as $c) {
       $formattedCustomer[] = [
         'id' => $c->getId(),
-        'img'=>$c->getImg(),
-        'username' => $c->getUsername(),
+        'img' => $c->getImg(),
+        'name' => $c->getName(),
         'email' => $c->getEmail(),
-        'phone'=>$c->getPhone(),
-        'status'=>$c->isStatus()
+        'phone' => $c->getPhone(),
+        // 'status' => $c->isStatus()
       ];
     }
-    return $this->json($formattedCustomer );
+    return $this->json($formattedCustomer);
   }
 }

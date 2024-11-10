@@ -2,9 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Movies;
 use App\Entity\Genres;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -18,33 +16,20 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
-class MovieType extends AbstractType
+class GenresType extends AbstractType
 {
   public function buildForm(FormBuilderInterface $builder, array $options): void
   {
     $builder
-      ->add('title', TextType::class, [
-        'label' => 'Tiêu đề',
+      ->add('name', TextType::class, [
+        'label' => 'Tên thể loại',
         'attr' => [
           'class' => 'form-control',
         ],
         'constraints' => [
-          new NotBlank(['message' => 'Tiêu đề không được để trống.']),
+          new NotBlank(['message' => 'Tên thể loại không được để trống.']),
         ],
       ])
-      ->add('description', TextType::class, [
-        'label' => 'Mô tả',
-        'attr' => [
-          'class' => 'form-control',
-        ],
-      ])
-      ->add('genre', EntityType::class, [
-        'class' => Genres::class,
-        'choice_label' => 'name',
-        'placeholder' => 'Chọn thể loại',
-        'required' => true,
-      ])
-      ->add('img')
       ->add('save', SubmitType::class, [
         'label' => 'Lưu phim',
         'attr' => [
@@ -56,7 +41,7 @@ class MovieType extends AbstractType
   public function configureOptions(OptionsResolver $resolver): void
   {
     $resolver->setDefaults([
-      'data_class' => Movies::class,
+      'data_class' => Genres::class,
     ]);
   }
 }

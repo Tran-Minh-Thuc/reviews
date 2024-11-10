@@ -58,7 +58,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Avatar</th>
-                                            <th>Username</th>
+                                            <th>Name</th>
                                             <th>Email</th>
                                             <th>SĐT</th>
                                             <th>Trạng thái</th>
@@ -131,9 +131,9 @@
                                     <td>
                                         <img src="${customer.img}" alt="Avatar" style="width: 50px; height: 50px; overflow: hidden; border-radius: 50%;">
                                     </td>
-                                    <td>${customer.username}</td>
+                                    <td>${customer.name}</td>
                                     <td>${customer.email}</td>
-                                    <td>${customer.phonenumber}</td>
+                                    <td>${customer.phone}</td>
                                     <td>${customer.status ? 'Đang hoạt động' : 'Không hoạt động'}</td>
                                     <td>
                                         <a href="/admin/edit-customer/${customer.id}" class="btn btn-primary active" style="background-color: #5DADE2; border: black">sửa</a>

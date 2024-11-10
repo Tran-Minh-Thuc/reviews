@@ -32,14 +32,15 @@
                     <strong>Danh sách</strong><span class="small ms-1">Phim</span>
                 </div>
                 <div class="card-body">
-                    <a href="/movie/create-movie" class="btn btn-primary active" aria-pressed="true" style="background-color: green; float:right; border: black">Thêm phim</a>
-                    <form id="search-form" action="#" method="GET">
+                    <a href="admin/movie/create-movie" class="btn btn-primary active" aria-pressed="true" style="background-color: green; float:right; border: black">Thêm phim</a>
+                    <form id="search-form" method="GET">
                         <div class="input-group mb-3" style="float:left; max-width: 600px; margin: auto;">
                             <div class="input-group-prepend">
                                 <label class="input-group-text" for="search_field">Tìm kiếm theo:</label>
                             </div>
                             <select class="custom-select" name="search_field" id="search_field">
-                                <option value="username">Tiêu đề</option>
+                                <option value="title">Tiêu đề</option>
+                                <option value="name">Thể loại</option>
                             </select>
                             <input type="search" name="search_query" class="form-control" placeholder="Nhập từ khóa...">
                             <div class="input-group-append">
@@ -57,6 +58,7 @@
                                             <th>#</th>
                                             <th>Avatar</th>
                                             <th>Tiêu đề</th>
+                                            <th>Thể loại</th>
                                             <th>Mô tả</th>
                                             <th>Ngày tạo</th>
                                             <th>Ngày cập nhật</th>
@@ -71,12 +73,13 @@
                                                 <img src="{{ movie.img }}" alt="Avatar" style="width: 50px; height: 50px; overflow: hidden; border-radius: 50%;">
                                             </td>
                                             <td>{{ movie.title }}</td>
+                                            <td>{{ movie.genre.name }}</td>
                                             <td>{{ movie.description }}</td>
                                             <td>{{ movie.created|date("Y-m-d H:i:s") }}</td>
                                             <td>{{ movie.updated|date("Y-m-d H:i:s") }}</td>
                                             
                                             <td>
-                                                <a href="/movie/edit-movie/{{ movie.id }}" class="btn btn-primary active"  aria-pressed="true" style="background-color: #5DADE2;border: black ">sửa</a>
+                                                <a href="admin/movie/edit-movie/{{ movie.id }}" class="btn btn-primary active"  aria-pressed="true" style="background-color: #5DADE2;border: black ">sửa</a>
                                                 |
                                                 <a href="#" class="btn btn-danger btn-delete" data-id="{{ movie.id }}" role="button">xóa</a>
                                             </td>
@@ -103,16 +106,19 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const searchForm = document.querySelector('#search-form');
-
+        
             searchForm.addEventListener('submit', function(event) {
-                event.preventDefault();
+                event.preventDefault(); // Ngăn không cho form submit theo cách mặc định
                 const submitButton = searchForm.querySelector('button[type="submit"]');
                 submitButton.disabled = true;
+        
                 const customerTableBody = document.querySelector('#movie-table-body');
-                customerTableBody.innerHTML = '';
-                const searchField = document.querySelector('select[name="search_field"]').value;
-                const searchQuery = document.querySelector('input[name="search_query"]').value;
-                fetch(`/movie/search-movie?search_field=${searchField}&search_query=${encodeURIComponent(searchQuery)}`)
+                customerTableBody.innerHTML = ''; // Xóa dữ liệu cũ
+        
+                const searchField = searchForm.querySelector('select[name="search_field"]').value;
+                const searchQuery = searchForm.querySelector('input[name="search_query"]').value;
+        
+                fetch(`/admin/search-movies?search_field=${searchField}&search_query=${encodeURIComponent(searchQuery)}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -121,20 +127,19 @@
                     })
                     .then(data => {
                         data.forEach((movie, index) => {
-                            const stt = index + 1;
                             const row = `
                                 <tr>
-                                    <td>${stt}</td>
+                                    <td>${index + 1}</td>
                                     <td>
                                         <img src="${movie.img}" alt="Avatar" style="width: 50px; height: 50px; overflow: hidden; border-radius: 50%;">
                                     </td>
                                     <td>${movie.title}</td>
+                                    <td>${movie.genres}</td>
                                     <td>${movie.description}</td>
-                                    <td>${movie.phonenumber}</td>
                                     <td>${movie.created}</td>
                                     <td>${movie.updated}</td>
                                     <td>
-                                        <a href="/admin/edit-customer/${movie.id}" class="btn btn-primary active" style="background-color: #5DADE2; border: black">sửa</a>
+                                        <a href="/admin/edit-movie/${movie.id}" class="btn btn-primary active" style="background-color: #5DADE2; border: black">sửa</a>
                                         |
                                         <a href="#" class="btn btn-danger btn-delete" data-id="${movie.id}" role="button">xóa</a>
                                     </td>

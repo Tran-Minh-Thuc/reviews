@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Movies;
+use App\Entity\Genres;
 use App\Form\MovieType;
 use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use DateTime;
 
 class MovieController extends AbstractController
@@ -20,10 +22,16 @@ class MovieController extends AbstractController
     {
         $this->em = $em;
     }
-    #[Route('/movie', name: 'movie_index')]
+    #[Route('admin/movies', name: 'movie_index')]
     public function index(Request $request, PaginatorInterface $paginator): Response
     {
-        $movies = $this->em->getRepository(Movies::class)->findAll();
+        $movies = $this->em->getRepository(Movies::class)
+            ->createQueryBuilder('m')
+            ->leftJoin('m.genre', 'g')
+            ->addSelect('g')
+            ->getQuery()
+            ->getResult();
+
         $pagination = $paginator->paginate(
             $movies,
             $request->query->getInt('page', 1),
@@ -33,7 +41,7 @@ class MovieController extends AbstractController
             'movies' => $pagination,
         ]);
     }
-    #[Route('/movie/create-movie', name: 'create-movie')]
+    #[Route('admin/create-movie', name: 'create-movie')]
     public function createMovie(Request $request): Response
     {
         $movie = new Movies();
@@ -58,7 +66,7 @@ class MovieController extends AbstractController
     /**
      * Edit customer.
      */
-    #[Route('/movie/edit-movie/{id}', name: 'edit-movie')]
+    #[Route('admin/edit-movie/{id}', name: 'edit-movie')]
     public function editMovie(Request $request, $id)
     {
 
@@ -81,7 +89,7 @@ class MovieController extends AbstractController
     /**
      * Delete a customer.
      */
-    #[Route('/movie/delete-movie/{id}', name: 'delete-movie')]
+    #[Route('admin/delete-movie/{id}', name: 'delete-movie')]
     public function deleteMovie($id)
     {
         $movie = $this->em->getRepository(Movies::class)->find($id);
@@ -107,33 +115,39 @@ class MovieController extends AbstractController
     /**
      * Search for movies.
      */
-    #[Route('/movie/search-movie', name: 'search-movie')]
-    public function searchMovie(Request $request): Response
+    #[Route('/admin/search-movies', name: 'search-movie')]
+    public function searchMovie(Request $request): JsonResponse
     {
-        $searchQuery = $request->query->get('search_query');
-        $searchField = $request->query->get('search_field');
+        $searchQuery = $request->query->get('search_query', '');
+        $searchField = $request->query->get('search_field', 'title');
+
         $queryBuilder = $this->em->createQueryBuilder();
-        $queryBuilder
-            ->select('c')
-            ->from('App\Entity\Movies', 'm');
+        $queryBuilder->select('m', 'g')
+            ->from('App\Entity\Movies', 'm')
+            ->leftJoin('m.genre', 'g');
 
         if ($searchField === 'title') {
-            $queryBuilder
-                ->andWhere("c.title LIKE :searchQuery")
+            $queryBuilder->andWhere('m.title LIKE :searchQuery')
+                ->setParameter('searchQuery', '%' . $searchQuery . '%');
+        } elseif ($searchField === 'name') {
+            $queryBuilder->andWhere('g.name LIKE :searchQuery')
                 ->setParameter('searchQuery', '%' . $searchQuery . '%');
         }
-        $Movies = $queryBuilder->getQuery()->getResult();
-        $formattedMovies = [];
-        foreach ($Movies as $m) {
-            $formattedMovies[] = [
+
+        $movies = $queryBuilder->getQuery()->getResult();
+
+        $formattedMovies = array_map(function (Movies $m) {
+            return [
                 'id' => $m->getId(),
                 'img' => $m->getImg(),
-                'title' => $m->getUsername(),
-                'description' => $m->getEmail(),
-                'created' => $m->getCreated(),
-                'updated' => $m->getUpdated(),
+                'title' => $m->getTitle(),
+                'description' => $m->getDescription(),
+                'genres' => $m->getGenre()->getName(),
+                'created' => $m->getCreated()->format('Y-m-d H:i:s'),
+                'updated' => $m->getUpdated()->format('Y-m-d H:i:s'),
             ];
-        }
+        }, $movies);
+
         return $this->json($formattedMovies);
     }
 }

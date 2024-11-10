@@ -1,0 +1,33 @@
+{% extends 'adminDashboard.html.twig' %}
+
+{% block body %}
+
+<div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="card-title">{{ form.vars.data.id is null ? 'Thêm mới thể loại' : 'Sửa thông tin thể loại'}}</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                   
+                    <div class="col-md-8">
+                        {{ form_start(form, {'attr': {'class': 'row g-3', 'enctype': 'multipart/form-data'}}) }}
+                            <div class="col-md-6">
+                                {{ form_row(form.name) }}
+                            </div>
+                            <div class="col-12 mt-3 d-flex justify-content-end">
+                                {{ form_widget(form.save) }}
+                                <a href="/genres" class="btn btn-secondary">Quay về trang chủ</a>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+</script>
+{% endblock %}

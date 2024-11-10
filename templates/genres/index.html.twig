@@ -1,0 +1,95 @@
+{% extends 'adminDashboard.html.twig' %}
+
+{% block body %}
+<div class="container-lg">
+    <div class="card mb-4">
+        <div class="card-header">
+            <strong>Danh sách</strong> <span class="small ms-1">Thể loại</span>
+        </div>
+        <div class="card-body">
+            <form id="search-form">
+                <div class="input-group mb-3" style="max-width: 600px; margin: auto;">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="search_field">Tìm kiếm theo:</label>
+                    </div>
+                    <select class="custom-select" name="search_field" id="search_field">
+                        <option value="name">Tên thể loại</option>
+                        <option value="genre">Thể loại</option>
+                    </select>
+                    <input type="search" name="search_query" class="form-control" placeholder="Nhập từ khóa...">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" style="background-color:#5DADE2;color:white">Tìm kiếm</button>
+                    </div>
+                </div>
+            </form>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tên thể loại</th>
+                        <th>Ngày tạo</th>
+                        <th>Ngày cập nhật</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="genres-table-body">
+                    {% for genre in genres %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ genre.name }}</td>
+                        <td>{{ genre.created|date('Y-m-d H:i:s') }}</td>
+                        <td>{{ genre.updated|date('Y-m-d H:i:s') }}</td>
+                        <td>
+                            <a href="/genres/edit-genres/{{ genre.id }}" class="btn btn-primary">Sửa</a>
+                            |
+                            <a href="#" class="btn btn-danger btn-delete" data-id="{{ genre.id }}">Xóa</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.querySelector('#search-form');
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const genresTableBody = document.querySelector('#genres-table-body');
+            genresTableBody.innerHTML = '';
+            const searchField = document.querySelector('select[name="search_field"]').value;
+            const searchQuery = document.querySelector('input[name="search_query"]').value;
+
+            fetch(`/genres/search-genres?search_field=${searchField}&search_query=${encodeURIComponent(searchQuery)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        genresTableBody.innerHTML = '<tr><td colspan="5">Không tìm thấy kết quả</td></tr>';
+                    } else {
+                        data.forEach((genre, index) => {
+                            const row = `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${genre.name}</td>
+                                    <td>${genre.created}</td>
+                                    <td>${genre.updated}</td>
+                                    <td>
+                                        <a href="/genres/edit-genres/${genre.id}" class="btn btn-primary">Sửa</a>
+                                        |
+                                        <a href="#" class="btn btn-danger btn-delete" data-id="${genre.id}">Xóa</a>
+                                    </td>
+                                </tr>`;
+                            genresTableBody.innerHTML += row;
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    });
+</script>
+{% endblock %}
