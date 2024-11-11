@@ -32,7 +32,7 @@
                     <strong>Danh sách</strong><span class="small ms-1">Phim</span>
                 </div>
                 <div class="card-body">
-                    <a href="admin/movie/create-movie" class="btn btn-primary active" aria-pressed="true" style="background-color: green; float:right; border: black">Thêm phim</a>
+                    <a href="/admin/create-movie" class="btn btn-primary active" aria-pressed="true" style="background-color: green; float:right; border: black">Thêm phim</a>
                     <form id="search-form" method="GET">
                         <div class="input-group mb-3" style="float:left; max-width: 600px; margin: auto;">
                             <div class="input-group-prepend">
@@ -79,7 +79,7 @@
                                             <td>{{ movie.updated|date("Y-m-d H:i:s") }}</td>
                                             
                                             <td>
-                                                <a href="admin/movie/edit-movie/{{ movie.id }}" class="btn btn-primary active"  aria-pressed="true" style="background-color: #5DADE2;border: black ">sửa</a>
+                                                <a href="/admin/edit-movie/{{ movie.id }}" class="btn btn-primary active"  aria-pressed="true" style="background-color: #5DADE2;border: black ">sửa</a>
                                                 |
                                                 <a href="#" class="btn btn-danger btn-delete" data-id="{{ movie.id }}" role="button">xóa</a>
                                             </td>
@@ -163,7 +163,7 @@
                     const movieID = event.target.getAttribute('data-id');
                     const confirmDelete = confirm("Bạn có chắc chắn muốn xóa phim này?");
                     if (confirmDelete) {
-                        window.location.href = `/movie/delete-movie/${movieID}`;
+                        window.location.href = `/admin/delete-movie/${movieID}`;
                     }
                 });
             });

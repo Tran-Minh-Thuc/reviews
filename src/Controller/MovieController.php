@@ -22,7 +22,7 @@ class MovieController extends AbstractController
     {
         $this->em = $em;
     }
-    #[Route('admin/movies', name: 'movie_index')]
+    #[Route('/admin/movies', name: 'movie_index')]
     public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $movies = $this->em->getRepository(Movies::class)
@@ -41,7 +41,7 @@ class MovieController extends AbstractController
             'movies' => $pagination,
         ]);
     }
-    #[Route('admin/create-movie', name: 'create-movie')]
+    #[Route('/admin/create-movie', name: 'create-movie')]
     public function createMovie(Request $request): Response
     {
         $movie = new Movies();
@@ -66,7 +66,7 @@ class MovieController extends AbstractController
     /**
      * Edit customer.
      */
-    #[Route('admin/edit-movie/{id}', name: 'edit-movie')]
+    #[Route('/admin/edit-movie/{id}', name: 'edit-movie')]
     public function editMovie(Request $request, $id)
     {
 
@@ -89,7 +89,7 @@ class MovieController extends AbstractController
     /**
      * Delete a customer.
      */
-    #[Route('admin/delete-movie/{id}', name: 'delete-movie')]
+    #[Route('/admin/delete-movie/{id}', name: 'delete-movie')]
     public function deleteMovie($id)
     {
         $movie = $this->em->getRepository(Movies::class)->find($id);

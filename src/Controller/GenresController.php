@@ -21,7 +21,7 @@ class GenresController extends AbstractController
     {
         $this->em = $em;
     }
-    #[Route('admin/genres', name: 'genres_index')]
+    #[Route('/admin/genres', name: 'genres_index')]
     public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $genres = $this->em->getRepository(Genres::class)->findAll();
@@ -34,7 +34,7 @@ class GenresController extends AbstractController
             'genres' => $pagination,
         ]);
     }
-    #[Route('admin/genres/create-genres', name: 'create-genres')]
+    #[Route('/admin/create-genre', name: 'create-genres')]
     public function createGenres(Request $request): Response
     {
         $genres = new Genres();
@@ -56,10 +56,8 @@ class GenresController extends AbstractController
         ]);
     }
 
-    /**
-     * Edit customer.
-     */
-    #[Route('admin/genres/edit-genres/{id}', name: 'edit-genres')]
+
+    #[Route('/admin/edit-genre/{id}', name: 'edit-genres')]
     public function editGenres(Request $request, $id)
     {
 
@@ -79,10 +77,8 @@ class GenresController extends AbstractController
         ]);
     }
 
-    /**
-     * Delete a customer.
-     */
-    #[Route('admin/genres/delete-genres/{id}', name: 'delete-genres')]
+
+    #[Route('/admin/delete-genre/{id}', name: 'delete-genres')]
     public function deleteGenres(int $id): Response
     {
         $genres = $this->em->getRepository(Genres::class)->find($id);
@@ -105,10 +101,8 @@ class GenresController extends AbstractController
         return $this->redirectToRoute('genres_index');
     }
 
-    /**
-     * Search for movies.
-     */
-    #[Route('admin/genres/search-genres', name: 'search_genres')]
+
+    #[Route('/admin/search-genre', name: 'search_genres')]
     public function searchGenres(Request $request): JsonResponse
     {
         $searchQuery = $request->query->get('search_query', '');
