@@ -13,7 +13,7 @@ class CustomerFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
         $imagePath = 'public/images/default_avt.jpg';
-        $imageData = base64_encode(file_get_contents($imagePath));
+        $imageData = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($imagePath));
 
         $john = new Customers();
         $john->setName('John Doe');
