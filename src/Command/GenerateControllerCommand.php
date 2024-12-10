@@ -119,7 +119,7 @@ class {$className}Controller extends AbstractController
         }
 
         // foreach (\${$name}->get__() as \$__) {
-        //     \$__->set\${$className}(null);
+        //     \$__->set{$className}(null);
         // }
 
         \$this->em->remove(\${$name});
@@ -189,6 +189,9 @@ TWIG;
         {% for {$name} in {$name}s %}
         <tr>
             <td>{{ {$name}.name }}</td>
+             {# {% if lop.lop %}
+                 <td>{{ lop.lop.name }}</td>
+             {% endif %} #}
             <td>
                 <a href="/edit-{$name}/{{ {$name}.id }}">Sửa</a>
                 |
