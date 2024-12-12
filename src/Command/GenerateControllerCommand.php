@@ -191,6 +191,8 @@ TWIG;
             <td>{{ {$name}.name }}</td>
              {# {% if lop.lop %}
                  <td>{{ lop.lop.name }}</td>
+             {% else %}
+                 <td></td>
              {% endif %} #}
             <td>
                 <a href="/edit-{$name}/{{ {$name}.id }}">Sửa</a>
